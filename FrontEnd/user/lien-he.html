@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Khám Thú Y Mini | HTK</title>
+    <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/lien-he.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="trang-chu.html">Phòng Khám Thú Y Mini</a>
+        </div>
+        <nav class="menu">
+            <ul>
+                <li><a href="trang-chu.html">Trang Chủ</a></li>
+                <li><a href="gioi-thieu.html">Giới Thiệu</a></li>
+                <li><a href="#">Dịch Vụ</a>
+                    <ul class="submenu">
+                        <li><a href="/FontEnd/user/medicalRecords/create.html">Đặt lịch khám</a></li>
+                        <li><a href="#">Tiêm Phòng</a></li>
+                    </ul>
+                </li>
+                <li><a href="tin-tuc.html">Tin tức</a></li>
+                <li><a href="lien-he.html">Liên Hệ</a></li>
+                <li><a href="#" id="account-link">Tài Khoản</a>
+                    <ul class="submenu" id="account-submenu">
+                        <!-- Menu sẽ được cập nhật bằng JavaScript -->
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="contact-container">
+            <div class="contact-info">
+                <h1>Liên Hệ Với Chúng Tôi</h1>
+                <div class="info">
+                    <div class="contact-item">
+                        <h2>Địa Chỉ</h2>
+                        <p>170 Đường ABC, Phường XYZ, TP. Quy Nhơn, T. Bình Định</p>
+                    </div>
+                    <div class="contact-item">
+                        <h2>Số Điện Thoại</h2>
+                        <p><a href="tel:+84987654321">+84 818 166 972</a></p>
+                    </div>
+                    <div class="contact-item">
+                        <h2>Email</h2>
+                        <p><a href="mailto:contact@phongkhamthuy.com">phongkhamthuyminihtk@gmail.com</a></p>
+                    </div>
+                    <div class="contact-item">
+                        <h2>Giờ Làm Việc</h2>
+                        <p>Thứ 2 - Thứ 6: 8:00 AM - 6:00 PM</p>
+                        <p>Thứ 7: 8:00 AM - 12:00 PM</p>
+                        <p>Chủ Nhật: Nghỉ</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <h2>Gửi Thông Tin Liên Hệ</h2>
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label for="name">Tên:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Nội Dung:</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Gửi</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Phòng Khám Thú Y Mini - Nơi thú cưng được yêu thương và chăm sóc tốt nhất</p>
+    </footer>
+
+    <script>
+        const token = localStorage.getItem('authToken');
+        const accountLink = document.getElementById('account-link');
+        const accountSubmenu = document.getElementById('account-submenu');
+
+        // Hàm để xử lý đăng xuất
+        function logout() {
+            if (token) {
+                fetch('http://localhost:8080/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ token: token })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            localStorage.removeItem('authToken');
+                            alert('Đăng xuất thành công!');
+                            window.location.href = "/FontEnd/dang-nhap.html";
+                        } else {
+                            alert('Đăng xuất không thành công. Vui lòng thử lại.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi logout:', error);
+                        alert('Đã có lỗi xảy ra. Vui lòng thử lại.');
+                    });
+            }
+        }
+
+        // Cập nhật menu tài khoản tùy thuộc vào tình trạng đăng nhập
+        if (token) {
+            accountLink.textContent = 'Tài Khoản'; // Hiển thị Tài Khoản
+            accountSubmenu.innerHTML = `
+                <li><a href="/FontEnd/user/owner/index.html">Thông tin cá nhân</a></li>
+                <li><a href="javascript:void(0);" onclick="logout()">Đăng xuất</a></li>
+            `;
+        } else {
+            accountLink.textContent = 'Khách'; // Hiển thị Khách
+            accountSubmenu.innerHTML = `
+                <li><a href="/FontEnd/dang-nhap.html">Đăng nhập</a></li>
+                <li><a href="/FontEnd/dang-ky.html">Đăng ký</a></li>
+            `;
+        }
+    </script>
+</body>
+</html>

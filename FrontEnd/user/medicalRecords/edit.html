@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Clinic | HTK</title>
+  <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/form.css">
+  <link href="/FontEnd/resources/assets/dest/css/main2.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Thông tin hồ sơ khám bệnh</h1>
+    <h4 id="error-message"></h4>
+    <h4 id="responseMessage" style="color: green;"></h4>
+    <form id="updateForm">
+      <div>
+        <label for="appointmentTime">Thời gian khám:</label>
+        <input type="datetime-local" id="appointmentTime" required />
+      </div>
+      <div>
+        <label for="nameOwner">Tên khách hàng:</label>
+        <input type="text" id="nameOwner" required />
+      </div>
+      <div>
+        <label for="phoneOwner">Số điện thoại:</label>
+        <input type="text" id="phoneOwner" disabled />
+      </div>
+      <div style="display: flex; align-items: center;">
+        <label for="namePet" style="margin-right: 10px; width: 380px;">Tên thú cưng:</label>
+        <input type="text" id="namePet" style="margin-right: 10px;" />
+
+        <label for="age" style="margin-right: 10px;">Tuổi:</label>
+        <input type="text" id="age" />
+      </div>
+      <div style="display: flex; align-items: center;">
+        <label for="species" style="margin-right: 10px;">Loài:</label>
+        <input type="text" id="species" style="margin-right: 10px;" />
+
+        <label for="breed" style="margin-right: 10px;">Giống:</label>
+        <input type="text" id="breed" />
+      </div>
+      <div>
+        <label for="description">Mô tả:</label>
+        <input type="text" id="description" />
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" onclick="history.back()">Quay lại</button>
+        <button type="submit" class="btn">Cập nhật</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('authToken');
+    const API_URL = 'http://localhost:8080/medical_records';
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramId = urlParams.get('id');
+
+    fetch(`${API_URL}/${paramId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch params data.');
+        }
+        return response.json();
+      })
+      .then((params) => {
+        document.getElementById('appointmentTime').value = params.appointmentTime;
+        document.getElementById('nameOwner').value = params.nameOwner;
+        document.getElementById('phoneOwner').value = params.phoneOwner;
+        document.getElementById('namePet').value = params.namePet;
+        document.getElementById('age').value = params.age;
+        document.getElementById('species').value = params.species;
+        document.getElementById('breed').value = params.breed;
+        document.getElementById('description').value = params.description;
+      })
+      .catch((error) => {
+        document.getElementById('error-message').textContent = error.message;
+      });
+
+    document.getElementById("updateForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const data = {
+        appointmentTime: document.getElementById('appointmentTime').value,
+        nameOwner: document.getElementById('nameOwner').value,
+        phoneOwner: document.getElementById('phoneOwner').value,
+        namePet: document.getElementById('namePet').value,
+        age: document.getElementById('age').value,
+        species: document.getElementById('species').value,
+        breed: document.getElementById('breed').value,
+        description: document.getElementById('description').value
+      };
+
+      console.log(data);
+      try {
+        const response = await fetch(`http://localhost:8080/appointments/${paramId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          const responseData = await response.json();
+          document.getElementById('responseMessage').textContent =
+            'Hồ sơ đã được cập nhật thành công!';
+        } else {
+          const errorData = await response.json();
+          document.getElementById('error-message').textContent =
+            'Lỗi cập nhật hồ sơ: ' + JSON.stringify(errorData);
+        }
+      } catch (error) {
+        document.getElementById('error-message').textContent = 'Lỗi: ' + error.message;
+      }
+    });
+  </script>
+</body>
+
+</html>

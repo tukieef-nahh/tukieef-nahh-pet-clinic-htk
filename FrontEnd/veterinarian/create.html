@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Clinic | HTK</title>
+  <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/form.css">
+  <link href="/FontEnd/resources/assets/dest/css/main2.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Hồ sơ khám bệnh</h1>
+    <h4 id="error-message" style="color: red;"></h4>
+    <form id="medicalRecordForm" onsubmit="createMedicalRecord(event)">
+      <div>
+        <label for="appointmentTime">Thời gian khám:</label>
+        <input type="datetime-local" id="appointmentTime" required />
+      </div>
+      <div>
+        <label for="nameOwner">Tên khách hàng:</label>
+        <input type="text" id="nameOwner" required minlength="3" />
+      </div>
+      <div>
+        <label for="phoneOwner">Số điện thoại:</label>
+        <input type="tel" id="phoneOwner" required pattern="^0[0-9]{9}$" />
+      </div>
+      <div>
+        <label for="nameVeterinarian">Tên bác sĩ:</label>
+        <input type="text" id="nameVeterinarian" required minlength="3" />
+      </div>
+      <div>
+        <label for="phoneVeterinarian">Số điện thoại:</label>
+        <input type="tel" id="phoneVeterinarian" required pattern="^0[0-9]{9}$" />
+      </div>
+      <div style="display: flex; align-items: center;">
+        <label for="namePet" style="margin-right: 10px; width: 380px;">Tên thú cưng:</label>
+        <input type="text" id="namePet" style="margin-right: 10px;" required />
+        <label for="age" style="margin-right: 10px;">Tuổi:</label>
+        <input type="text" id="age" required />
+      </div>
+      <div style="display: flex; align-items: center;">
+        <label for="species" style="margin-right: 10px;">Loài:</label>
+        <input type="text" id="species" style="margin-right: 10px;" required />
+        <label for="breed" style="margin-right: 10px;">Giống:</label>
+        <input type="text" id="breed" required />
+      </div>
+      <div>
+        <label for="description">Mô tả:</label>
+        <input type="text" id="description" required />
+      </div>
+      <div>
+        <label for="diagnosis">Chuẩn đoán:</label>
+        <input type="text" id="diagnosis" required />
+      </div>
+      <div>
+        <label for="treatment">Điều trị:</label>
+        <input type="text" id="treatment" required />
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" onclick="history.back()">Quay lại</button>
+        <button type="submit" class="btn btn-success" style="margin-right: 10px;">Lưu hồ sơ</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('authToken');
+    console.log(token);
+    const errorMessageEl = document.getElementById('error-message');
+
+    async function createMedicalRecord(event) {
+      event.preventDefault();
+
+      // Lấy dữ liệu từ form
+      const recordData = {
+        sequenceNumber: 0,
+        appointmentTime: document.getElementById("appointmentTime").value,
+        nameOwner: document.getElementById("nameOwner").value,
+        phoneOwner: document.getElementById("phoneOwner").value,
+        nameVeterinarian: document.getElementById("nameVeterinarian").value,
+        phoneVeterinarian: document.getElementById("phoneVeterinarian").value,
+        namePet: document.getElementById("namePet").value,
+        age: document.getElementById("age").value,
+        species: document.getElementById("species").value,
+        breed: document.getElementById("breed").value,
+        description: document.getElementById("description").value,
+        diagnosis: document.getElementById("diagnosis").value,
+        treatment: document.getElementById("treatment").value,
+        status: "COMPLETED"
+      };
+
+      try {
+        const response = await fetch('http://localhost:8080/medical-records', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify(recordData)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message || 'Unable to create medical record.'}`);
+          return;
+        }
+
+        const result = await response.json();
+        alert(`Hồ sơ khám đã được tạo thành công với ID: ${result.id}`);
+        document.getElementById('medicalRecordForm').reset();
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra khi tạo hồ sơ khám. Vui lòng thử lại.');
+      }
+    }
+  </script>
+</body>
+
+</html>

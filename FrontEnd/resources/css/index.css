@@ -1,0 +1,209 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+    background-color: #f2f2f2;
+}
+
+header {
+    background-color: #adccff;
+    color: black;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    padding: 10px 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header .logo a {
+    font-size: 24px;
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+
+nav.menu {
+    margin-right: 70px;
+}
+
+nav.menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav.menu ul li {
+    position: relative;
+}
+
+nav.menu ul li a {
+    color: black;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+nav.menu ul li a:hover {
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+}
+
+nav.menu ul li .submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    min-width: 170px;
+    padding: 5px;
+}
+
+nav.menu ul li:hover .submenu {
+    display: block;
+}
+
+nav.menu ul li .submenu li a {
+    padding: 10px;
+    color: black;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    margin: 5px;
+}
+
+nav.menu ul li .submenu li a:hover {
+    background-color: #adccff;
+    color: black;
+    border-radius: 5px;
+}
+
+main {
+    padding: 70px;
+}
+        
+.content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.section {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.section img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+        
+.section h3 {
+    font-size: 18px;
+    color: #333;
+}
+        
+.section p {
+    font-size: 14px;
+    color: #555;
+}
+        
+footer {
+    background-color: #adccff;
+    color: black;
+    text-align: center;
+    margin-top: auto;
+    position: fixed;
+    bottom: 0;
+    font-weight: bold;
+    width: 100%;
+}
+
+/* Phần thông tin cá nhân */
+.personal-info-container {
+    display: flex;
+    margin-top: 80px; /* Cung cấp không gian cho header cố định */
+    gap: 20px;
+    padding: 20px;
+}
+
+.personal-info-container .menu-sidebar {
+    width: 200px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.personal-info-container .menu-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.personal-info-container .menu-sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.personal-info-container .menu-sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.personal-info-container .menu-sidebar ul li a:hover {
+    color: #adccff;
+}
+
+.personal-info-container .details {
+    flex-grow: 1;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.personal-info-container .details h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.personal-info-container .details .info-item {
+    margin-bottom: 10px;
+}
+
+.personal-info-container .details .info-item label {
+    font-weight: bold;
+    color: #555;
+}
+
+.personal-info-container .details .info-item p {
+    font-size: 16px;
+    color: #777;
+}

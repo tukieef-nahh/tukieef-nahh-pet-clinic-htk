@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Clinic | HTK</title>
+  <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/form.css">
+  <link href="/FontEnd/resources/assets/dest/css/main2.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Thông tin bác sĩ</h1>
+    <h4 id="error-message"></h4>
+    <form action="" id="editForm">
+      <div>
+        <label for="name">Họ và tên:</label>
+        <input type="text" id="name" placeholder="Nhập họ tên" required />
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Nhập email" required />
+      </div>
+      <div>
+        <label for="phone">Số điện thoại:</label>
+        <input type="text" id="phone" placeholder="Nhập số điện thoại" required />
+      </div>
+      <div>
+        <label for="specialization">Chuyên môn:</label>
+        <input type="text" id="specialization" placeholder="Nhập địa chỉ" required />
+      </div>
+      <div class="form-actions">
+        <button type="submit">Cập nhật</button>
+        <button type="button" class="btn btn-primary" onclick="history.back()" style="margin-left: 10px;">Hủy</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    const token = localStorage.getItem('authToken');
+    const API_URL = 'http://localhost:8080/veterinarians';
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramId = urlParams.get('id');
+    let currentPassword = "";
+
+    fetch(`${API_URL}/${paramId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch params data.');
+        }
+        return response.json();
+      })
+      .then((params) => {
+        document.getElementById('name').value = params.name;
+        document.getElementById('email').value = params.email;
+        document.getElementById('phone').value = params.phone;
+        document.getElementById('specialization').value = params.specialization;
+        currentPassword = params.password;
+      })
+      .catch((error) => {
+        document.getElementById('error-message').textContent = error.message;
+      });
+
+    document
+      .getElementById('editForm')
+      .addEventListener('submit', function (e) {
+        e.preventDefault();
+        const newElement = {
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          specialization: document.getElementById('specialization').value,
+          password: currentPassword,
+        };
+
+        fetch(`${API_URL}/${paramId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newElement),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              return response.json().then((errorData) => {
+                document.getElementById('error-message').textContent =
+                  errorData.details + '\n' + errorData.message;
+                throw new Error(errorData.details + '\n' + errorData.message);
+              });
+            }
+            return response.json();
+          })
+          .then(() => {
+            window.location.href = 'index.html?success=edit';
+          })
+          .catch((error) => console.error('Error:', error));
+      });
+  </script>
+</body>
+
+</html>

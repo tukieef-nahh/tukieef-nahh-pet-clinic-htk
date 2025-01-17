@@ -1,0 +1,61 @@
+.active {
+	background-color: #fff;
+    border-radius: 5px;
+}
+
+main .content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    justify-items: center;
+}
+
+main .content section {
+    display: grid;
+    grid-template-columns: 150px auto;
+    gap: 20px;
+    width: 80%;
+    max-width: 1000px;
+    height: 150px;
+    padding-bottom: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    align-items: center;
+}
+
+main .content .intro {
+    justify-self: flex-start;
+	margin-left: 150px;
+}
+
+main .content .equipment {
+    justify-self: flex-end;
+    margin-right: 150px;
+}
+
+main .content .certification {
+    justify-self: flex-start;
+    margin-left: 150px;
+}
+
+main .content section img {
+    width: 100%;
+    width: 150px;
+    margin-left: 10px;
+    border-radius: 8px;
+}
+
+main .content section h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
+main .content section p {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 1em;
+    color: #555;
+}

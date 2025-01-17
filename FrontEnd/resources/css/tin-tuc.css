@@ -1,0 +1,81 @@
+@charset "UTF-8";
+.active {
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+main .content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+main .content .news-item {
+    display: grid;
+    grid-template-columns: 150px auto;
+    gap: 20px;
+    width: 80%;
+    max-width: 500px;
+    height: 150px;
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    align-items: center;
+}
+
+main .content .news-item img {
+    width: 100%;
+    max-width: 150px;
+    border-radius: 8px;
+}
+
+main .content .news-item h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
+main .content .news-item p {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 1em;
+    color: #555;
+}
+
+/* Bố cục lệch trái cho tin ở vị trí lẻ (1, 5) */
+main .content .news-item:nth-child(odd) {
+    grid-template-columns: 150px auto;
+    justify-self: end;
+}
+
+/* Bố cục lệch phải cho tin ở vị trí chẵn (2, 4, 6) */
+main .content .news-item:nth-child(even) {
+    grid-template-columns: 150px auto;
+    justify-self: start;
+}
+
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    margin: 0 5px;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.pagination a:hover {
+    background-color: #ddd;
+}
+
+.no-content {
+    text-align: center;
+    color: #888;
+}

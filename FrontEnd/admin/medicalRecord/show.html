@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Clinic | HTK</title>
+  <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/form.css">
+  <link href="/FontEnd/resources/assets/dest/css/main2.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Thông tin hồ sơ khám bệnh</h1>
+    <h4 id="error-message"></h4>
+    <form action="" id="editForm">
+      <div>
+        <label for="appointmentTime">Thời gian khám:</label>
+        <input type="text" id="appointmentTime" disabled />
+      </div>
+      <div>
+        <label for="nameOwner">Tên khách hàng:</label>
+        <input type="text" id="nameOwner" disabled />
+      </div>
+      <div>
+        <label for="phoneOwner">Số điện thoại:</label>
+        <input type="text" id="phoneOwner" disabled />
+      </div>
+      <div>
+        <label for="nameVeterinarian">Tên bác sĩ:</label>
+        <input type="text" id="nameVeterinarian" disabled />
+      </div>
+      <div>
+        <label for="phoneVeterinarian">Số điện thoại:</label>
+        <input type="text" id="phoneVeterinarian" disabled />
+      </div>
+      <div style="display: flex; align-items: center;">
+        <label for="namePet" style="margin-right: 10px; width: 380px;">Tên thú cưng:</label>
+        <input type="text" id="namePet" disabled style="margin-right: 10px;" />
+
+        <label for="age" style="margin-right: 10px;">Tuổi:</label>
+        <input type="text" id="age" disabled />
+      </div>
+      <div style="display: flex; align-items: center;">
+        <label for="species" style="margin-right: 10px;">Loài:</label>
+        <input type="text" id="species" disabled style="margin-right: 10px;" />
+
+        <label for="breed" style="margin-right: 10px;">Giống:</label>
+        <input type="text" id="breed" disabled />
+      </div>
+      <div>
+        <label for="description">Mô tả:</label>
+        <input type="text" id="description" disabled />
+      </div>
+      <div>
+        <label for="diagnosis">Chuẩn đoán:</label>
+        <input type="text" id="diagnosis" disabled />
+      </div>
+      <div>
+        <label for="treatment">Điều trị:</label>
+        <input type="text" id="treatment" disabled />
+      </div>
+      <div>
+        <label for="createdAt">Thời gian tạo:</label>
+        <input type="text" id="createdAt" disabled />
+      </div>
+      <div>
+        <label for="updatedAt">Thời gian cập nhật:</label>
+        <input type="text" id="updatedAt" disabled />
+      </div>
+      <div>
+        <label for="status">Trạng thái hồ sơ:</label>
+        <input type="text" id="status" style="font-weight: bold; color: green;" disabled />
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" onclick="history.back()">Quay lại</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    const token = localStorage.getItem('authToken');
+    const API_URL = 'http://localhost:8080/medical_records';
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramId = urlParams.get('id');
+
+    fetch(`${API_URL}/${paramId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch params data.');
+        }
+        return response.json();
+      })
+      .then((params) => {
+        document.getElementById('appointmentTime').value = params.appointmentTime;
+        document.getElementById('nameOwner').value = params.nameOwner;
+        document.getElementById('phoneOwner').value = params.phoneOwner;
+        document.getElementById('nameVeterinarian').value = params.nameVeterinarian;
+        document.getElementById('phoneVeterinarian').value = params.phoneVeterinarian;
+        document.getElementById('namePet').value = params.namePet;
+        document.getElementById('age').value = params.age;
+        document.getElementById('species').value = params.species;
+        document.getElementById('breed').value = params.breed;
+        document.getElementById('description').value = params.description;
+        document.getElementById('diagnosis').value = params.diagnosis;
+        document.getElementById('treatment').value = params.treatment;
+        document.getElementById('createdAt').value = params.createdAt;
+        document.getElementById('updatedAt').value = params.updatedAt;
+        document.getElementById('status').value = params.status;
+      })
+      .catch((error) => {
+        document.getElementById('error-message').textContent = error.message;
+      });
+  </script>
+</body>
+
+</html>

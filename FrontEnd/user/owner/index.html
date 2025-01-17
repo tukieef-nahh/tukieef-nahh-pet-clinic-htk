@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Cá Nhân | Phòng Khám Thú Y Mini</title>
+    <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/formUser.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/canhan.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="trang-chu.html">Phòng Khám Thú Y Mini</a>
+        </div>
+        <nav class="menu">
+            <ul>
+                <li><a href="/FontEnd/user/trang-chu.html">Trang Chủ</a></li>
+                <li><a href="/FontEnd/user/gioi-thieu.html">Giới Thiệu</a></li>
+                <li><a href="#">Dịch Vụ</a>
+                    <ul class="submenu">
+                        <li><a href="/FontEnd/user/medicalRecords/create.html">Đặt lịch khám</a></li>
+                        <li><a href="#">Tiêm Phòng</a></li>
+                    </ul>
+                </li>
+                <li><a href="/FontEnd/user/tin-tuc.html">Tin tức</a></li>
+                <li><a href="/FontEnd/user/lien-he.html">Liên Hệ</a></li>
+                <li><a href="#" id="account-link">Tài Khoản</a>
+                    <ul class="submenu" id="account-submenu">
+                        <!-- Menu tài khoản -->
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="personal-info-container">
+            <!-- Menu dọc -->
+            <div class="menu-sidebar">
+                <ul>
+                    <li><a href="/FontEnd/user/owner/index.html">Thông tin cá nhân</a></li>
+                    <li><a href="/FontEnd/user/medicalRecords/index.html">Hồ sơ và lịch khám</a></li>
+                </ul>
+            </div>
+
+            <!-- Chi tiết thông tin cá nhân -->
+            <div class="details">
+                <h1>Thông tin cá nhân</h1>
+                <h4 id="error-message"></h4>
+                <form action="" id="editForm">
+                    <div>
+                        <label for="name">Họ và tên:</label>
+                        <input type="text" id="name" disabled />
+                    </div>
+                    <div>
+                        <label for="address">Địa chỉ:</label>
+                        <input type="text" id="address" disabled />
+                    </div>
+                    <div>
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" disabled />
+                    </div>
+                    <div>
+                        <label for="phone">Số điện thoại:</label>
+                        <input type="text" id="phone" disabled />
+                    </div>
+                    <div>
+                        <label for="role">Quyền:</label>
+                        <input type="text" id="role" disabled />
+                    </div>
+                    <div>
+                        <label for="password">Mật khẩu:</label>
+                        <div style="position: relative;">
+                            <input type="password" id="password" disabled />
+                            <span id="toggle-password"
+                                style="position: absolute; right: 45px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                                <i class="fa fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" style="margin-left: 10px;" onclick="redirectToEdit()">Chỉnh sửa</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+
+    <footer>
+        <p>Phòng Khám Thú Y Mini - Nơi thú cưng được yêu thương và chăm sóc tốt nhất</p>
+    </footer>
+
+    <script>
+        const token = localStorage.getItem('authToken');
+        const accountLink = document.getElementById('account-link');
+        const accountSubmenu = document.getElementById('account-submenu');
+
+        // Cập nhật menu tài khoản tùy thuộc vào tình trạng đăng nhập
+        if (token) {
+            accountLink.textContent = 'Tài Khoản';
+            accountSubmenu.innerHTML = `
+                <li><a href="/FontEnd/user/owner/index.html">Thông tin cá nhân</a></li>
+                <li><a href="javascript:void(0);" onclick="logout()">Đăng xuất</a></li>
+            `;
+        } else {
+            accountLink.textContent = 'Khách';
+            accountSubmenu.innerHTML = `
+                <li><a href="/FontEnd/dang-nhap.html">Đăng nhập</a></li>
+                <li><a href="/FontEnd/dang-ky.html">Đăng ký</a></li>
+            `;
+        }
+
+        // Hàm đăng xuất
+        function logout() {
+            if (token) {
+                fetch('http://localhost:8080/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ token: token })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            localStorage.removeItem('authToken');
+                            alert('Đăng xuất thành công!');
+                            window.location.href = "/FontEnd/dang-nhap.html";
+                        } else {
+                            alert('Đăng xuất không thành công. Vui lòng thử lại.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi logout:', error);
+                        alert('Đã có lỗi xảy ra. Vui lòng thử lại.');
+                    });
+            }
+        }
+
+        const API_URL = 'http://localhost:8080/users/phone';
+        const phone = localStorage.getItem('phone');
+
+        fetch(`${API_URL}/${phone}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch params data.');
+                }
+                return response.json();
+            })
+            .then((params) => {
+                document.getElementById('name').value = params.name;
+                document.getElementById('address').value = params.address;
+                document.getElementById('email').value = params.email;
+                document.getElementById('phone').value = params.phone;
+                document.getElementById('role').value = params.roles;
+                document.getElementById('password').value = params.password;
+            })
+            .catch((error) => {
+                document.getElementById('error-message').textContent = error.message;
+            });
+
+        function redirectToEdit() {
+            window.location.href = `edit.html?id=${phone}`;
+        }
+
+        document.getElementById('toggle-password').addEventListener('click', () => {
+            const passwordField = document.getElementById('password');
+            const icon = document.getElementById('toggle-password').querySelector('i');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Khám Thú Y Mini | Tin Tức</title>
+    <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/tin-tuc.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="trang-chu.html">Phòng Khám Thú Y Mini</a>
+        </div>
+        <nav class="menu">
+            <ul>
+                <li><a href="trang-chu.html">Trang Chủ</a></li>
+                <li><a href="gioi-thieu.html">Giới Thiệu</a></li>
+                <li><a href="#">Dịch Vụ</a>
+                    <ul class="submenu">
+                        <li><a href="/FontEnd/user/medicalRecords/create.html">Đặt lịch khám</a></li>
+                        <li><a href="#">Tiêm Phòng</a></li>
+                    </ul>
+                </li>
+                <li><a href="tin-tuc.html">Tin tức</a></li>
+                <li><a href="lien-he.html">Liên Hệ</a></li>
+                <li><a href="#" id="account-link">Tài Khoản</a>
+                    <ul class="submenu" id="account-submenu">
+                        <!-- Menu sẽ được cập nhật bằng JavaScript -->
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+    	<h2 style="text-align: center;">Tin tức</h2>
+        <div class="content">
+            <div class="news-item">
+                <img src="/FontEnd/resources/images/tin-tuc/tin_1.jpg" alt="Tin tức 1">
+                <div>
+                    <h2>Tin Tức 1</h2>
+                    <p>Đây là thông tin về chương trình khuyến mãi dịch vụ khám bệnh cho thú cưng vào dịp lễ Tết. Các bạn đừng bỏ lỡ cơ hội này.</p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <img src="/FontEnd/resources/images/tin-tuc/tin_2.jpg" alt="Tin tức 2">
+                <div>
+                    <h2>Tin Tức 2</h2>
+                    <p>Phòng khám vừa được cấp chứng nhận bởi tổ chức y tế quốc tế, đánh dấu một bước tiến mới trong chất lượng dịch vụ khám chữa bệnh thú cưng.</p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <img src="/FontEnd/resources/images/tin-tuc/tin_3.jpg" alt="Tin tức 3">
+                <div>
+                    <h2>Tin Tức 3</h2>
+                    <p>Đây là thông tin về một dịch vụ mới mà phòng khám chúng tôi vừa triển khai, giúp thú cưng có thể khám bệnh với chất lượng tốt nhất.</p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <img src="/FontEnd/resources/images/tin-tuc/tin_4.jpg" alt="Tin tức 4">
+                <div>
+                    <h2>Tin Tức 4</h2>
+                    <p>Hãy cùng chúng tôi nâng cao chất lượng khám bệnh cho thú cưng với dịch vụ chăm sóc sức khỏe định kỳ tại phòng khám thú y của chúng tôi.</p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <img src="/FontEnd/resources/images/tin-tuc/tin_5.jpg" alt="Tin tức 5">
+                <div>
+                    <h2>Tin Tức 5</h2>
+                    <p>Phòng khám tiếp tục triển khai các chương trình khám bệnh miễn phí cho thú cưng. Các bạn có thể đăng ký lịch khám qua hệ thống website của chúng tôi.</p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <img src="/FontEnd/resources/images/tin-tuc/tin_6.jpg" alt="Tin tức 6">
+                <div>
+                    <h2>Tin Tức 6</h2>
+                    <p>Phòng khám chúng tôi đã có đội ngũ bác sĩ thú y chuyên nghiệp giúp thú cưng của bạn có một sức khỏe tốt nhất và được chăm sóc tận tình.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="pagination">
+            <a href="#">&laquo; Trang trước</a>
+            <a href="#">1</a>
+            <a href="#">2</a>
+            <a href="#">Trang sau &raquo;</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>Phòng Khám Thú Y Mini - Nơi thú cưng được yêu thương và chăm sóc tốt nhất</p>
+    </footer>
+
+    <script>
+        const token = localStorage.getItem('authToken');
+        const accountLink = document.getElementById('account-link');
+        const accountSubmenu = document.getElementById('account-submenu');
+
+        // Hàm để xử lý đăng xuất
+        function logout() {
+            if (token) {
+                fetch('http://localhost:8080/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ token: token })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            localStorage.removeItem('authToken');
+                            alert('Đăng xuất thành công!');
+                            window.location.href = "/FontEnd/dang-nhap.html";
+                        } else {
+                            alert('Đăng xuất không thành công. Vui lòng thử lại.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi logout:', error);
+                        alert('Đã có lỗi xảy ra. Vui lòng thử lại.');
+                    });
+            }
+        }
+
+        // Cập nhật menu tài khoản tùy thuộc vào tình trạng đăng nhập
+        if (token) {
+            accountLink.textContent = 'Tài Khoản'; // Hiển thị Tài Khoản
+            accountSubmenu.innerHTML = `
+                <li><a href="/FontEnd/user/owner/index.html">Thông tin cá nhân</a></li>
+                <li><a href="javascript:void(0);" onclick="logout()">Đăng xuất</a></li>
+            `;
+        } else {
+            accountLink.textContent = 'Khách'; // Hiển thị Khách
+            accountSubmenu.innerHTML = `
+                <li><a href="/FontEnd/dang-nhap.html">Đăng nhập</a></li>
+                <li><a href="/FontEnd/dang-ky.html">Đăng ký</a></li>
+            `;
+        }
+    </script>
+</body>
+</html>

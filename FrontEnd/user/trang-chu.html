@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Khám Thú Y Mini | HTK</title>
+    <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/index.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="trang-chu.html">Phòng Khám Thú Y Mini</a>
+        </div>
+        <nav class="menu">
+            <ul>
+                <li><a href="trang-chu.html">Trang Chủ</a></li>
+                <li><a href="gioi-thieu.html">Giới Thiệu</a></li>
+                <li><a href="#">Dịch Vụ</a>
+                    <ul class="submenu">
+                        <li><a href="/FontEnd/user/medicalRecords/create.html">Đặt lịch khám</a></li>
+                        <li><a href="#">Tiêm Phòng</a></li>
+                    </ul>
+                </li>
+                <li><a href="tin-tuc.html">Tin tức</a></li>
+                <li><a href="lien-he.html">Liên Hệ</a></li>
+                <li><a href="#" id="account-link">Tài Khoản</a>
+                    <ul class="submenu" id="account-submenu">
+                        <!-- Menu sẽ được cập nhật bằng JavaScript -->
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2 style="text-align: center; margin-bottom: 20px;">Chào Mừng Đến Với Phòng Khám Thú Y Mini</h2>
+        <div class="content">
+            <div class="section">
+                <img src="/FontEnd/resources/images/trang-chu/trang-chu-1.jpg" alt="Hồ Sơ Thú Cưng">
+                <h3>Hồ Sơ Thú Cưng</h3>
+                <p>Quản lý thông tin thú cưng của bạn một cách dễ dàng.</p>
+            </div>
+            <div class="section">
+                <img src="/FontEnd/resources/images/trang-chu/trang-chu-2.jpg" alt="Dịch Vụ Thú Y">
+                <h3>Dịch Vụ Thú Y</h3>
+                <p>Khám, tiêm phòng, chăm sóc sức khỏe cho thú cưng.</p>
+            </div>
+            <div class="section">
+                <img src="/FontEnd/resources/images/trang-chu/trang-chu-3.jpg" alt="Đặt Lịch Khám">
+                <h3>Đặt Lịch Khám</h3>
+                <p>Chọn ngày giờ phù hợp để đặt lịch khám cho thú cưng.</p>
+            </div>
+            <div class="section">
+                <img src="/FontEnd/resources/images/trang-chu/trang-chu-4.jpg" alt="Tư Vấn Online">
+                <h3>Tư Vấn Online</h3>
+                <p>Nhận tư vấn trực tuyến từ bác sĩ thú y chuyên nghiệp.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Phòng Khám Thú Y Mini - Nơi thú cưng được yêu thương và chăm sóc tốt nhất</p>
+    </footer>
+
+    <script>
+        const token = localStorage.getItem('authToken');
+        const accountLink = document.getElementById('account-link');
+        const accountSubmenu = document.getElementById('account-submenu');
+
+        // Hàm để xử lý đăng xuất
+        function logout() {
+            if (token) {
+                fetch('http://localhost:8080/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ token: token })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            localStorage.removeItem('authToken');
+                            alert('Đăng xuất thành công!');
+                            window.location.href = "/FontEnd/dang-nhap.html";
+                        } else {
+                            alert('Đăng xuất không thành công. Vui lòng thử lại.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi logout:', error);
+                        alert('Đã có lỗi xảy ra. Vui lòng thử lại.');
+                    });
+            }
+        }
+
+        // Cập nhật menu tài khoản tùy thuộc vào tình trạng đăng nhập
+        if (token) {
+            accountLink.textContent = 'Tài Khoản'; // Hiển thị Tài Khoản
+            accountSubmenu.innerHTML = `
+                <li><a href="/FontEnd/user/owner/index.html">Thông tin cá nhân</a></li>
+                <li><a href="javascript:void(0);" onclick="logout()">Đăng xuất</a></li>
+            `;
+        } else {
+            accountLink.textContent = 'Khách'; // Hiển thị Khách
+            accountSubmenu.innerHTML = `
+                <li><a href="/FontEnd/dang-nhap.html">Đăng nhập</a></li>
+                <li><a href="/FontEnd/dang-ky.html">Đăng ký</a></li>
+            `;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Clinic | HTK</title>
+  <link rel="stylesheet" type="text/css" href="/FontEnd/resources/css/form.css">
+  <link href="/FontEnd/resources/assets/dest/css/main2.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Thêm người dùng</h1>
+    <h4 id="error-message"></h4>
+    <form action="" id="addForm">
+      <div>
+        <label for="name">Họ và tên:</label>
+        <input type="text" id="name" placeholder="Nhập họ tên" required />
+      </div>
+      <div>
+        <label for="address">Địa chỉ:</label>
+        <input type="text" id="address" placeholder="Nhập địa chỉ" required />
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Nhập email" required />
+      </div>
+      <div>
+        <label for="phone">Số điện thoại:</label>
+        <input type="text" id="phone" placeholder="Nhập số điện thoại" required />
+      </div>
+      <div>
+        <label for="password">Mật khẩu:</label>
+        <input type="password" id="password" placeholder="Nhập mật khẩu" required />
+      </div>
+      <div>
+        <label for="confirmPassword">Nhập lại mật khẩu:</label>
+        <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu" required />
+      </div>
+      <div class="form-actions">
+        <button type="submit">Lưu</button>
+        <button type="button" class="btn btn-primary" onclick="window.location.href='index.html'"
+          style="margin-left: 10px;">Hủy</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    const token = localStorage.getItem('authToken');
+    document.getElementById('addForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (password !== confirmPassword) {
+        document.getElementById('error-message').textContent = 'Mật khẩu không khớp!';
+        return;
+      }
+
+      const newOwner = {
+        name: document.getElementById('name').value,
+        address: document.getElementById('address').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        password: password,
+      };
+
+      fetch('http://localhost:8080/users', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newOwner),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((errorData) => {
+              document.getElementById('error-message').textContent =
+                errorData.details + '\n' + errorData.message;
+              throw new Error(errorData.details + '\n' + errorData.message);
+            });
+          }
+          return response.json();
+        })
+        .then(() => {
+          window.location.href = 'index.html?success=add';
+        })
+        .catch((error) => console.error('Error:', error));
+    });
+  </script>
+</body>
+
+</html>

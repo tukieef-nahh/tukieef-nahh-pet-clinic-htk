@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Veterinarian Management | Fashion Shop Admin">
+    <meta name="author" content="">
+    <title>Quản lý bác sĩ | Pet Clinic</title>
+
+    <link href="/FontEnd/resources/assets/dest/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+    <link href="/FontEnd/resources/assets/dest/css/main2.css" rel="stylesheet">
+    <link href="/FontEnd/resources/assets/dest/css/responsive.css" rel="stylesheet">
+</head>
+
+<body>
+    <header id="header">
+        <div class="header-middle">
+            <div class="container d-flex justify-content-between align-items-center">
+                <a href="/sanpham" class="header-logo">Pet Clinic | HTK</a>
+                <div class="shop-menu">
+                    <button type="button" onclick="logout()"
+                        style="background:none; border:none; color: inherit; cursor:pointer;">
+                        <i class="fa fa-sign-out"></i> Đăng xuất
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="container">
+                <div class="mainmenu text-center">
+                    <ul class="nav navbar-nav collapse navbar-collapse">
+                        <li><a href="/FontEnd/admin/owner/"><i class="fa"></i>Quản lý Owners</a></li>
+                        <li><a href="/FontEnd/admin/medicalRecord/"><i class="fa"></i>Quản lý hồ sơ thú cưng</a></li>
+                        <li><a href="/FontEnd/admin/appointment/"><i class="fa"></i>Quản lý lịch khám</a></li>
+                        <li class="active"><a href="/FontEnd/admin/veterinarian/"><i class="fa"></i>Quản lý bác sĩ</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section>
+        <div class="container" style="margin-top: 2em;">
+            <div class="text-center">
+                <h1>Danh sách bác sĩ phòng khám</h1>
+            </div>
+            <!-- Thông báo -->
+            <div id="alertContainer" class="alert" style="display:none;"></div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <a href="add.html" class="btn btn-success">Thêm thông tin bác sĩ</a>
+                <div class="search_box pull-right">
+                    <input type="text" name="SearchString" id="searchInput" placeholder="Tìm kiếm...">
+                    <button class="btn btn-success" onclick="fetchSearch()">Tìm kiếm</button>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <table id="tableId" class="table table-bordered table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" width="5%">Id</th>
+                            <th scope="col" width="17%">Họ và tên</th>
+                            <th scope="col" width="17%">Email</th>
+                            <th scope="col" width="10%">Số điện thoại</th>
+                            <th scope="col" width="15%">Chuyên môn</th>
+                            <th scope="col" width="10%">Quyền</th>
+                            <th scope="col" width="15%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data -->
+                    </tbody>
+                </table>
+                <div id="pagination">
+                    <nav>
+                        <ul class="pagination">
+                            <!-- Pagination items will be dynamically generated here -->
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const token = localStorage.getItem('authToken');
+        function logout() {
+            if (token) {
+                fetch('http://localhost:8080/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ token: token })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            localStorage.removeItem('authToken');
+                            alert('Đăng xuất thành công!');
+                            window.location.href = "/FontEnd/dang-nhap.html";
+                        } else {
+                            alert('Đăng xuất không thành công. Vui lòng thử lại.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi logout:', error);
+                        alert('Đã có lỗi xảy ra. Vui lòng thử lại.');
+                    });
+            }
+        }
+
+        let currentPage = 0;
+        const pageSize = 8;
+
+        function loadVeterinarians(page = 0) {
+            fetch(`http://localhost:8080/admin/veterinarians?page=${page}&size=8`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch veterinarians');
+                    return response.json();
+                })
+                .then(data => {
+                    renderTable(data.content);
+                    renderPagination(data.totalPages, page);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function fetchSearch() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            const url = keyword
+                ? `http://localhost:8080/admin/veterinarians/search?keyword=${encodeURIComponent(keyword)}&page=${currentPage}&size=${pageSize}`
+                : `http://localhost:8080/admin/veterinarians?page=${currentPage}&size=${pageSize}`;
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Lỗi không lấy được kết quả tìm kiếm.');
+                    return response.json();
+                })
+                .then(data => {
+                    renderTable(data.content);
+                    renderPagination(data.totalPages, currentPage);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function renderTable(veterinarians) {
+            const tbody = document.querySelector('#tableId tbody');
+            tbody.innerHTML = '';
+            if (veterinarians.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center">Không có kết quả</td></tr>`;
+            } else {
+                veterinarians.forEach(veterinarian => {
+                    const row = `
+                        <tr>
+                            <td>${veterinarian.id}</td>
+                            <td>${veterinarian.name}</td>
+                            <td>${veterinarian.email}</td>
+                            <td>${veterinarian.phone}</td>
+                            <td>${veterinarian.specialization}</td>
+                            <td>${veterinarian.roles}</td>
+                            <td>
+                                <a href="show.html?id=${veterinarian.id}" class="btn btn-success btn-sm">Xem</a>
+                                <a href="edit.html?id=${veterinarian.id}" class="btn btn-warning btn-sm">Chỉnh sửa</a>
+                                <button class="btn btn-danger btn-sm" onclick="deleteVeterinarian(${veterinarian.id})">Xóa</button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+        }
+
+        // Phân trang
+        function renderPagination(totalPages, currentPage) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const paginationList = document.createElement('ul');
+            paginationList.classList.add('pagination');
+
+            // First page button
+            const firstButton = document.createElement('li');
+            firstButton.classList.add('page-item');
+            firstButton.innerHTML = `<a class="page-link" href="#" onclick="loadVeterinarians(0)">&laquo;</a>`;
+            if (currentPage === 0) firstButton.classList.add('disabled');
+            paginationList.appendChild(firstButton);
+
+            // Previous page button
+            const prevButton = document.createElement('li');
+            prevButton.classList.add('page-item');
+            prevButton.innerHTML = `<a class="page-link" href="#" onclick="loadVeterinarians(${currentPage - 1})">&lsaquo;</a>`;
+            if (currentPage === 0) prevButton.classList.add('disabled');
+            paginationList.appendChild(prevButton);
+
+            // Page number buttons
+            for (let i = 0; i < totalPages; i++) {
+                const pageButton = document.createElement('li');
+                pageButton.classList.add('page-item');
+                if (i === currentPage) pageButton.classList.add('active');
+                pageButton.innerHTML = `<a class="page-link" href="#" onclick="loadVeterinarians(${i})">${i + 1}</a>`;
+                paginationList.appendChild(pageButton);
+            }
+
+            // Next page button
+            const nextButton = document.createElement('li');
+            nextButton.classList.add('page-item');
+            nextButton.innerHTML = `<a class="page-link" href="#" onclick="loadVeterinarians(${currentPage + 1})">&rsaquo;</a>`;
+            if (currentPage === totalPages - 1) nextButton.classList.add('disabled');
+            paginationList.appendChild(nextButton);
+
+            // Last page button
+            const lastButton = document.createElement('li');
+            lastButton.classList.add('page-item');
+            lastButton.innerHTML = `<a class="page-link" href="#" onclick="loadVeterinarians(${totalPages - 1})">&raquo;</a>`;
+            if (currentPage === totalPages - 1) lastButton.classList.add('disabled');
+            paginationList.appendChild(lastButton);
+
+            pagination.appendChild(paginationList);
+        }
+
+        function deleteVeterinarian(veterinarianId) {
+            if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
+                fetch(`http://localhost:8080/admin/veterinarians/${veterinarianId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            return response.json().then((data) => {
+                                showAlert(data.message, 'danger');
+                            });
+                        }
+                        alert('Xóa thành công!');
+                        loadVeterinarians();
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        showAlert('Đã có lỗi xảy ra. Không thể xóa người dùng.', 'danger');
+                    });
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.style.display = 'block';
+            alertContainer.className = `alert alert-${type}`;
+            alertContainer.textContent = message;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadVeterinarians);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+
+            if (success === 'add') {
+                const alertContainer = document.getElementById('alertContainer');
+                alertContainer.style.display = 'block';
+                alertContainer.className = 'alert alert-success';
+                alertContainer.textContent = 'Thêm người dùng thành công!';
+            }
+            if (success === 'edit') {
+                const alertContainer = document.getElementById('alertContainer');
+                alertContainer.style.display = 'block';
+                alertContainer.className = 'alert alert-success';
+                alertContainer.textContent = 'Cập nhật người dùng thành công!';
+            }
+            loadVeterinarians();
+
+            setTimeout(() => {
+                alertContainer.style.display = 'none';
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>
